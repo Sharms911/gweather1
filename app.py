@@ -15,12 +15,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    global response
     api_key = '219ee2cd1c341d93688001529dc36a06'
     city, _ = get_user_city()
     url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + api_key
-
     print(url)
     response = requests.get(url).json()
+    raingraph()
     forecast_list = response["list"]
     forecast_data = []
     index = 0
@@ -50,6 +51,11 @@ def index():
             posted_hour = str(int(posted_hour) - 12)
 
 
+        wind = forecast_list[index]['wind']['speed']
+
+
+
+
 
         index += 8
         dict = {
@@ -61,6 +67,7 @@ def index():
             "tempmax":tempmax,
             "precipitation":precipitation,
             "humidity":humidity,
+            "wind":wind,
             "posted_day":posted_day,
             "posted_hour":posted_minute,
             "posted_minute":posted_minute,
@@ -71,15 +78,18 @@ def index():
 
         forecast_data.append(dict)
 
-        print(posted_hour)
+        print(precipitation)
+
         print(posted_day)
-        print(posted_am_pm)
-        print(posted_minute)
+
+
+
     return render_template('home.html', forecast_data=forecast_data)
 
 
 
 def get_user_city():
+    print ('Get user city')
     try:
         response = requests.get('http://ip-api.com/json')
         data = response.json()
@@ -91,27 +101,40 @@ def get_user_city():
         return None
 
 
+def tempgraph():
+    global response
+    print ('tempgraph')
+    templist = {}
+    for i in range(8):
+        wind_dict[f"temptoday{i}"] = int(response['list']['main']['temp'] - 273.15)
+
+    hour_data = (0, 3, 6, 9, 12, 15, 18, 21)
+
+    pyplot.figure(figsize=(14, 3))
+    pyplot.plot(hour_data, templist)
+    pyplot.savefig("static/graph.png")
+    print ('saved')
+
+    image = Image.open('static/graph.png')
+    crop_box = (130, 0, 1280, 300)
+    cropped_image = image.crop(crop_box)
+    cropped_image = cropped_image.convert('RGB')
+    cropped_image.save('static/cropped_graph.png')
 
 
 def raingraph():
-    raintoday1 = response["list"][3].get("rain", {}).get("3h", 0) * 100
-    raintoday2 = response["list"][6].get("rain", {}).get("3h", 0) * 100
-    raintoday3 = response["list"][9].get("rain", {}).get("3h", 0) * 100
-    raintoday4 = response["list"][12].get("rain", {}).get("3h", 0) * 100
-    raintoday5 = response["list"][15].get("rain", {}).get("3h", 0) * 100
-    raintoday6 = response["list"][18].get("rain", {}).get("3h", 0) * 100
-    raintoday7 = response["list"][21].get("rain", {}).get("3h", 0) * 100
+    print ('raingraph')
+    rainlist = {}
+    for i in range(8):
+        rain_dict[f"raintoday{i}"] = response["list"][i * 3].get("rain", {}).get("3h", 0) * 100
 
-    rainlist = (raintoday1, raintoday2,raintoday3, raintoday4, raintoday5, raintoday6, raintoday7,)
 
     hour_data = (0, 3, 6, 9, 12, 15, 18, 21)
     min_length = min(len(hour_data), len(rainlist))
-    hour_data = hour_data[:min_length]
-    rainlist = rainlist[:min_length]
-
     pyplot.figure(figsize=(14, 3))
     pyplot.plot(hour_data, rainlist)
     pyplot.savefig("static/raingraph.png")
+    print ('should be saved')
 
     image = Image.open('static/raingraph.png')
     crop_box = (130, 0, 1280, 300)
@@ -119,16 +142,12 @@ def raingraph():
     cropped_image = cropped_image.convert('RGB')
     cropped_image.save('static/cropped_raingraph.png')
 
-
 def windgraph():
-    windtoday = response['list'][0]['wind']['speed']
-    windtoday1 = response['list'][3]['wind']['speed']
-    windtoday2 = response['list'][6]['wind']['speed']
-    windtoday3 = response['list'][9]['wind']['speed']
-    windtoday4 = response['list'][12]['wind']['speed']
-    windtoday5 = response['list'][15]['wind']['speed']
-    windtoday6 = response['list'][18]['wind']['speed']
-    windtoday7 = response['list'][21]['wind']['speed']
+    print ('windgraph')
+    wind_speeds = []
+    for i in range(8):
+        wind_speed = response['list'][i * 3]['wind']['speed']
+        wind_speeds.append(wind_speed)
 
     hour_data = (0, 3, 6, 9, 12, 15, 18, 21)
 
@@ -144,20 +163,21 @@ def windgraph():
     cropped_image = cropped_image.convert('RGB')
     cropped_image.save('static/cropped_windgraph.png')
 
-def temperaturegraph():
-    temperature_data = [temp_c, ttp1, ttp2, ttp3, ttp4, ttp5]
 
-    day_data = [day0, day1, day2, day3, day4, day5]
 
-    pyplot.figure(figsize=(14, 3))
-    pyplot.plot(day_data, temperature_data)
-    pyplot.savefig("static/graph.png")
 
-    image = Image.open('static/graph.png')
-    crop_box = (130, 0, 1280, 300)
-    cropped_image = image.crop(crop_box)
-    cropped_image = cropped_image.convert('RGB')
-    cropped_image.save('static/cropped_graph.png')
+
+
+
+
+
+
+
+
+
+
+#hhhhhh
+
 
 
 # @app.route('/results', methods=["POST", "GET"])
