@@ -47,8 +47,7 @@
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="Temperature" tabindex="0"><img src="/static/cropped_graph.png" style="margin-left: 0px;"></div>
   <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="Precipitation" tabindex="0"><img src="static/cropped_raingraph.png" style="margin-left: -1px;"></div>
-  <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="Wind" tabindex="0"><img src="static/cropped_windgraph.png"><\div>
-</div>
+  <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="Wind" tabindex="0"><img src="static/cropped_windgraph.png"></div>
 
 
 
@@ -71,7 +70,7 @@
                                     <div class="col-md-2 mb-4">
                                         <p class="card-text" style="margin-left: 10px !important;">{{ forecast_data[0]['posted_day']}} {{ forecast_data[0]['temp'] }}°C</p>
                                         <img src= "{{ forecast_data[0]['icon'] }}" style="width: 100px;" class="me-2">
-                                        <p class="card-text">{{ forecast_data[0]['tempmin'] }}°C {{ forecast_data[1]['tempmax'] }}°C</p>
+                                        <p class="card-text">{{ forecast_data[0]['tempmin'] }}°C {{ forecast_data[0]['tempmax'] }}°C</p>
 
                                     </div>
 
@@ -104,7 +103,7 @@
                         <p class="card-text" style="margin-left: 20px !important;">{{ forecast_data[4]['posted_day']}} {{ forecast_data[4]['temp'] }}°C</p>
                         <img src= "{{ forecast_data[4]['icon'] }}" style="width: 100px;" class="me-2">
                         <p class="card-text">{{ forecast_data[4]['tempmin'] }}°C {{ forecast_data[4]['tempmax'] }}°C</p>
-
+                    </div>
                     </div>
                         </center>
 
