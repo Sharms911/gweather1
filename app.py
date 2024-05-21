@@ -12,14 +12,12 @@ from PIL import Image
 app = Flask(__name__)
 
 
-
 @app.route('/')
-def index():
+def index(dt_txt=None):
     api_key = '219ee2cd1c341d93688001529dc36a06'
-    city, _ = get_user_city()
+    city,_ = get_user_city()
     url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + api_key
-
-
+    print(url)
     response = requests.get(url).json()
     forecast_list = response["list"]
     forecast_data = []
@@ -61,15 +59,16 @@ def index():
             "humidity": humidity,
             "wind": wind,
             "posted_day": posted_day,
-            "posted_hour": posted_minute,
+            "posted_hour": posted_hour,
             "posted_minute": posted_minute,
-            "posted_am_pm": posted_am_pm
-
+            "posted_am_pm": posted_am_pm,
+            "city": city,
         }
 
         forecast_data.append(dict)
 
         index += 8
+
 
         # GRAPH FOR TEMPERATURE
         temptoday = int(response['list'][0]['main']['temp'])
@@ -132,11 +131,7 @@ def index():
         cropped_image = cropped_image.convert('RGB')
         cropped_image.save('static/cropped_windgraph.png')
 
-
-
     return render_template('home.html', forecast_data=forecast_data)
-
-
 
 
 def get_user_city():
