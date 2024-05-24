@@ -131,7 +131,7 @@ def index(dt_txt=None):
         cropped_image = cropped_image.convert('RGB')
         cropped_image.save('static/cropped_windgraph.png')
 
-    return render_template('home.html', forecast_data=forecast_data)
+    return render_template('index.html', forecast_data=forecast_data)
 
 
 def get_user_city():
